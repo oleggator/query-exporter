@@ -23,10 +23,10 @@ func (wp *WorkerPool) Run() {
 	for i := 0; i < wp.workersCount; i++ {
 		wp.wg.Add(1)
 
-		go func() {
+		go func(i int, tasks <-chan interface{}) {
 			defer wp.wg.Done()
-			wp.workerFunc(i, wp.tasks)
-		}()
+			wp.workerFunc(i, tasks)
+		}(i, wp.tasks)
 	}
 }
 
