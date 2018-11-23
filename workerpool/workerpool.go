@@ -5,13 +5,13 @@ import (
 )
 
 type WorkerPool struct {
-	workerFunc   func(id int, queries <-chan interface{})
+	workerFunc   func(id int, tasks <-chan interface{})
 	workersCount int
 	tasks        chan interface{}
 	wg           sync.WaitGroup
 }
 
-func NewWorkerPool(workersCount int, workerFunc func(id int, queries <-chan interface{})) WorkerPool {
+func NewWorkerPool(workersCount int, workerFunc func(id int, tasks <-chan interface{})) WorkerPool {
 	return WorkerPool{
 		workersCount: workersCount,
 		workerFunc:   workerFunc,
@@ -23,9 +23,9 @@ func (wp *WorkerPool) Run() {
 	for i := 0; i < wp.workersCount; i++ {
 		wp.wg.Add(1)
 
-		go func(i int, tasks <-chan interface{}) {
+		go func(id int, tasks <-chan interface{}) {
 			defer wp.wg.Done()
-			wp.workerFunc(i, tasks)
+			wp.workerFunc(id, tasks)
 		}(i, wp.tasks)
 	}
 }
