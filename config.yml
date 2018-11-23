@@ -1,0 +1,17 @@
+host: localhost
+user: postgres
+password: postgres
+port: 5432
+db_name: postgres
+output_dir: ./result
+
+queries:
+- name: people
+  query: |
+    select name, lastname, birthday from people
+  max_lines: 100
+
+- name: cities
+  query: |
+    select name, country from cities
+  max_lines: 200

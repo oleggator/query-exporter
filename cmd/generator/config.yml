@@ -1,0 +1,24 @@
+host: localhost
+user: postgres
+password: postgres
+port: 5432
+db_name: postgres
+
+tables:
+- name: people
+  count: 1000
+  fields:
+  - name: name
+    type: name
+  - name: lastname
+    type: lastname
+  - name: birthday
+    type: timestamp
+
+- name: cities
+  count: 1000
+  fields:
+  - name: name
+    type: city
+  - name: country
+    type: country
