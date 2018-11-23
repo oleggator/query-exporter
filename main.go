@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"github.com/jackc/pgx"
 	"github.com/oleggator/query-exporter/workerpool"
-	"gopkg.in/yaml.v2"
 	"log"
 	"os"
 	"path"
@@ -16,7 +14,7 @@ import (
 
 func main() {
 	threadsCount := flag.Int("t", 1, "threads count")
-	configPath := flag.String("c", "", "config file")
+	configPath := flag.String("c", "./config.yml", "config file")
 	flag.Parse()
 
 	if configPath == nil || *configPath == "" {
@@ -25,15 +23,7 @@ func main() {
 
 	runtime.GOMAXPROCS(*threadsCount)
 
-	configFile, err := os.Open(*configPath)
-	defer configFile.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	configDecoder := yaml.NewDecoder(bufio.NewReader(configFile))
-	config := &Config{}
-	err = configDecoder.Decode(config)
+	config, err := getConfig(*configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
