@@ -17,10 +17,6 @@ type Config struct {
 	Queries   []Query `yaml:"queries"`
 }
 
-type Query struct {
-	QueryString   string `yaml:"query"`
-	Name          string `yaml:"name"`
-	MaxLinesCount int    `yaml:"max_lines"`
 func getConfig(configPath string) (*Config, error) {
 	configFile, err := os.Open(configPath)
 	defer configFile.Close()
