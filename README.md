@@ -1,3 +1,5 @@
+[Задание](https://github.com/oleggator/query-exporter/blob/master/intern_task.txt)
+
 # PostgreSQL Query Exporter
 
 ## Installation
