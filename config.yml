@@ -13,5 +13,6 @@ queries:
 
 - name: cities
   query: |
-    select name, country from cities
-  max_lines: 200
+    select cities.name as name, countries.name as country from cities
+      join countries on country_id=countries.id
+  max_lines: 1000
