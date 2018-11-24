@@ -68,7 +68,7 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 
 		values := make([]string, len(rawValues))
 		for i, rawValue := range rawValues {
-			if fieldDescriptions[i].DataTypeName == "timestamp" {
+			if fieldDescriptions[i].DataTypeName == "timestamp" || fieldDescriptions[i].DataTypeName == "date" {
 				values[i] = fmt.Sprintf("%d", rawValue.(time.Time).Unix())
 			} else {
 				values[i] = rawValue.(string)
