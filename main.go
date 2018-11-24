@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"github.com/jackc/pgx"
-	"github.com/oleggator/query-exporter/workerpool"
 	"log"
 	"runtime"
 )
@@ -52,7 +51,7 @@ func main() {
 		}
 	}
 
-	workerPool := workerpool.NewWorkerPool(*threadsCount, workerFunc)
+	workerPool := NewWorkerPool(*threadsCount, workerFunc)
 	workerPool.Run()
 
 	queries := workerPool.GetInputChannel()
