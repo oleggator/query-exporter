@@ -15,8 +15,12 @@ type Query struct {
 	MaxLinesCount int    `yaml:"max_lines"`
 }
 
+type QueryExecutor interface {
+	Query(sql string, args ...interface{}) (*pgx.Rows, error)
+}
+
 // Export exports query result to csv files
-func (query Query) Export(conn *pgx.Conn, outputDir string) (int, error) {
+func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 	rows, err := conn.Query(query.QueryString)
 	if err != nil {
 		return 0, err
