@@ -25,6 +25,7 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer rows.Close()
 
 	fieldDescriptions := rows.FieldDescriptions()
 	headers := make([]string, len(fieldDescriptions))
@@ -38,16 +39,27 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 		return 0, err
 	}
 
+	var csvFile *CSVFile
 	fileIndex := 0
-	filePath := path.Join(dirPath, fmt.Sprintf("%03d.csv", fileIndex))
-	csvFile, err := NewCSVFile(filePath, headers)
-	defer csvFile.Close()
-	if err != nil {
-		return 0, err
-	}
-
 	i := 0
 	for ; rows.Next(); i++ {
+		if i%query.MaxLinesCount == 0 {
+			if csvFile != nil {
+				err = csvFile.Close()
+				if err != nil {
+					return i, err
+				}
+			}
+
+			filePath := path.Join(dirPath, fmt.Sprintf("%03d.csv", fileIndex))
+			csvFile, err = NewCSVFile(filePath, headers)
+			if err != nil {
+				return i, err
+			}
+
+			fileIndex++
+		}
+
 		rawValues, err := rows.Values()
 		if err != nil {
 			return i, err
@@ -65,21 +77,6 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 		csvFile.Write(values)
 		if err != nil {
 			return i, err
-		}
-
-		if i != 0 && i%query.MaxLinesCount == 0 {
-			fileIndex++
-
-			err = csvFile.Close()
-			if err != nil {
-				return i, err
-			}
-
-			filePath := path.Join(dirPath, fmt.Sprintf("%03d.csv", fileIndex))
-			csvFile, err = NewCSVFile(filePath, headers)
-			if err != nil {
-				return i, err
-			}
 		}
 	}
 
