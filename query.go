@@ -81,5 +81,7 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 		}
 	}
 
+	csvFile.Close()
+
 	return i, nil
 }
