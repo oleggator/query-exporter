@@ -17,7 +17,7 @@ func main() {
 		log.Fatalln("Empty config path")
 	}
 
-	*threadsCount = runtime.GOMAXPROCS(*threadsCount)
+	runtime.GOMAXPROCS(*threadsCount)
 	log.Println("Using", *threadsCount, "threads")
 
 	config, err := getConfig(*configPath)
