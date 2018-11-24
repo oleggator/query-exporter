@@ -14,14 +14,15 @@ func main() {
 	flag.Parse()
 
 	if configPath == nil || *configPath == "" {
-		log.Fatalln("empty config path")
+		log.Fatalln("Empty config path")
 	}
 
-	runtime.GOMAXPROCS(*threadsCount)
+	*threadsCount = runtime.GOMAXPROCS(*threadsCount)
+	log.Println("Using", *threadsCount, "threads")
 
 	config, err := getConfig(*configPath)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Config open error:", err)
 	}
 
 	conn, err := pgx.NewConnPool(pgx.ConnPoolConfig{
@@ -35,7 +36,7 @@ func main() {
 		MaxConnections: 10,
 	})
 	if err != nil {
-		log.Fatalln("Unable to connection to database:", err)
+		log.Fatalln("Unable to connect to database:", err)
 	}
 	defer conn.Close()
 
@@ -43,7 +44,7 @@ func main() {
 		for query := range queries {
 			count, err := query.(Query).Export(conn, config.OutputDir)
 			if err != nil {
-				log.Println(query.(Query).Name+": error:", err)
+				log.Println(query.(Query).Name, "exporting error:", err)
 				continue
 			}
 
