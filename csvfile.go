@@ -5,11 +5,13 @@ import (
 	"os"
 )
 
+// CSVFile wrap work with file and csv writer
 type CSVFile struct {
 	file      *os.File
 	csvWriter *csv.Writer
 }
 
+// NewCSVFile creates CSVFile
 func NewCSVFile(filePath string, headers []string) (*CSVFile, error) {
 	file, err := os.Create(filePath)
 	if err != nil {
@@ -32,6 +34,7 @@ func (csvFile *CSVFile) Write(record []string) error {
 	return csvFile.csvWriter.Write(record)
 }
 
+// Close writes any buffered data to the file, then sync and close file
 func (csvFile *CSVFile) Close() (err error) {
 	csvFile.csvWriter.Flush()
 

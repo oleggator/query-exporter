@@ -15,6 +15,7 @@ type Query struct {
 	MaxLinesCount int    `yaml:"max_lines"`
 }
 
+// QueryExecutor for struct with Query method
 type QueryExecutor interface {
 	Query(sql string, args ...interface{}) (*pgx.Rows, error)
 }
