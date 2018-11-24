@@ -32,8 +32,18 @@ func (csvFile *CSVFile) Write(record []string) error {
 	return csvFile.csvWriter.Write(record)
 }
 
-func (csvFile *CSVFile) Close() {
+func (csvFile *CSVFile) Close() (err error) {
 	csvFile.csvWriter.Flush()
-	csvFile.file.Sync()
-	csvFile.file.Close()
+
+	err = csvFile.file.Sync()
+	if err != nil {
+		return err
+	}
+
+	err = csvFile.file.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

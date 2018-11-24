@@ -63,11 +63,17 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 		}
 
 		csvFile.Write(values)
+		if err != nil {
+			return i, err
+		}
 
 		if i != 0 && i%query.MaxLinesCount == 0 {
 			fileIndex++
 
-			csvFile.Close()
+			err = csvFile.Close()
+			if err != nil {
+				return i, err
+			}
 
 			filePath := path.Join(dirPath, fmt.Sprintf("%03d.csv", fileIndex))
 			csvFile, err = NewCSVFile(filePath, headers)
