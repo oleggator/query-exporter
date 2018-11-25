@@ -21,6 +21,11 @@ func NewCSVFile(filePath string, headers []string) (*CSVFile, error) {
 	csvWriter := csv.NewWriter(file)
 	err = csvWriter.Write(headers)
 	if err != nil {
+		err = file.Close()
+		if err != nil {
+			return nil, err
+		}
+
 		return nil, err
 	}
 

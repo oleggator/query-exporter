@@ -63,6 +63,11 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 
 		rawValues, err := rows.Values()
 		if err != nil {
+			err = csvFile.Close()
+			if err != nil {
+				return i, err
+			}
+
 			return i, err
 		}
 
@@ -75,13 +80,21 @@ func (query Query) Export(conn QueryExecutor, outputDir string) (int, error) {
 			}
 		}
 
-		csvFile.Write(values)
+		err = csvFile.Write(values)
 		if err != nil {
+			err = csvFile.Close()
+			if err != nil {
+				return i, err
+			}
+
 			return i, err
 		}
 	}
 
-	csvFile.Close()
+	err = csvFile.Close()
+	if err != nil {
+		return i, err
+	}
 
 	return i, nil
 }
