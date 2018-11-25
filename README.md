@@ -20,11 +20,11 @@ Usage of query-exporter:
 
 ## Usage example
 
-### Start DB
+### Start and init DB
 ```
-docker run -p5432:5432 -e POSTGRES_PASSWORD=postgres --rm -d postgres:11.1-alpine
+docker run -p5432:5432 -e POSTGRES_PASSWORD=postgres --name postgres --rm -d postgres:11.1-alpine
+docker exec -i postgres psql -U postgres < db_up.sql
 ```
-
 
 ### Install random data generator
 ```
