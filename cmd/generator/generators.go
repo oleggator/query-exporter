@@ -15,7 +15,7 @@ func generatePeople(conn *pgx.Conn, count int) (err error) {
 	_, err = conn.Prepare("insert_people",
 		`insert into people (name, lastname, birthday, some_flag) values ($1, $2, $3, $4)`)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	tx, err := conn.Begin()
@@ -50,16 +50,19 @@ func generatePeople(conn *pgx.Conn, count int) (err error) {
 
 	err = batch.Send(context.Background(), nil)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	err = batch.Close()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	err = tx.Commit()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
@@ -87,6 +90,7 @@ func generateCountries(conn *pgx.Conn, count int) (countryIDs []int, err error) 
 
 	err = batch.Send(context.Background(), nil)
 	if err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 
@@ -97,11 +101,13 @@ func generateCountries(conn *pgx.Conn, count int) (countryIDs []int, err error) 
 
 	err = batch.Close()
 	if err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 
 	err = tx.Commit()
 	if err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 
@@ -136,16 +142,19 @@ func generateCities(conn *pgx.Conn, count int, countryIDs []int) (err error) {
 
 	err = batch.Send(context.Background(), nil)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	err = batch.Close()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	err = tx.Commit()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 

@@ -11,7 +11,7 @@ func main() {
 	flag.Parse()
 
 	if configPath == nil || *configPath == "" {
-		log.Fatal("Empty config path")
+		log.Fatalln("Empty config path")
 	}
 
 	config, err := getConfig(*configPath)
