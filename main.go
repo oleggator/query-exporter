@@ -47,7 +47,7 @@ func main() {
 				continue
 			}
 
-			log.Println(query.(Query).Name+": successfuly exported", count, "records")
+			log.Println(query.(Query).Name+": successfully exported", count, "records")
 		}
 	}
 
